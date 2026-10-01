@@ -1,0 +1,1 @@
+import {Router} from "express"; import {me,updateProfile} from "../controllers/userController.js"; import {protect} from "../middleware/auth.js"; const r=Router(); r.use(protect); r.get("/me",me); r.put("/profile",updateProfile); export default r;

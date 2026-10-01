@@ -1,0 +1,1377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>FitBuddy - AI Fitness & Wellness</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            color: #1f2937;
+        }
+
+        /* HEADER */
+
+        .header {
+            background: #111827;
+            color: white;
+            padding: 20px 6%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+        .logo span {
+            color: #818cf8;
+        }
+
+        .header-status {
+            background: #166534;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+        }
+
+        /* CONTAINER */
+
+        .container {
+            width: 92%;
+            max-width: 1200px;
+            margin: 30px auto 60px;
+        }
+
+        /* HERO */
+
+        .hero {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            color: white;
+            border-radius: 22px;
+            padding: 45px;
+            margin-bottom: 25px;
+            box-shadow: 0 12px 35px rgba(79, 70, 229, 0.2);
+        }
+
+        .hero h1 {
+            margin: 0 0 10px;
+            font-size: 38px;
+        }
+
+        .hero p {
+            margin: 0;
+            font-size: 17px;
+            opacity: 0.9;
+        }
+
+        /* CARDS */
+
+        .card {
+            background: white;
+            border-radius: 18px;
+            padding: 28px;
+            margin-bottom: 25px;
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.06);
+        }
+
+        .card-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 22px;
+        }
+
+        .card-title h2 {
+            margin: 0;
+            font-size: 22px;
+        }
+
+        /* PROFILE FORM */
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.full {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #d1d5db;
+            border-radius: 10px;
+            font-size: 15px;
+            outline: none;
+            font-family: inherit;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: #4f46e5;
+        }
+
+        textarea {
+            min-height: 140px;
+            resize: vertical;
+        }
+
+        .primary-button {
+            width: 100%;
+            margin-top: 22px;
+            padding: 16px;
+            border: none;
+            border-radius: 11px;
+            background: #4f46e5;
+            color: white;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .primary-button:hover {
+            background: #4338ca;
+        }
+
+        .primary-button:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        /* PROFILE SUMMARY */
+
+        .profile-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        .profile-item {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 17px;
+        }
+
+        .profile-item span {
+            display: block;
+            color: #6b7280;
+            font-size: 13px;
+            margin-bottom: 6px;
+        }
+
+        .profile-item strong {
+            font-size: 16px;
+        }
+
+        /* AI SECTIONS */
+
+        .ai-output {
+            background: #f8fafc;
+            border-radius: 13px;
+            padding: 22px;
+            white-space: pre-wrap;
+            line-height: 1.7;
+            max-height: 650px;
+            overflow-y: auto;
+        }
+
+        .nutrition-output {
+            background: #f0fdf4;
+            border-left: 5px solid #16a34a;
+        }
+
+        .updated-output {
+            background: #eff6ff;
+            border-left: 5px solid #4f46e5;
+        }
+
+        /* STATUS */
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 25px;
+            color: #6b7280;
+        }
+
+        .spinner {
+            width: 35px;
+            height: 35px;
+            border: 4px solid #e5e7eb;
+            border-top: 4px solid #4f46e5;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 12px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .message {
+            display: none;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+
+        .success {
+            display: block;
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .error {
+            display: block;
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        /* DASHBOARD STATS */
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+        }
+
+        .stat {
+            padding: 22px;
+            border-radius: 14px;
+            background: #f8fafc;
+            text-align: center;
+        }
+
+        .stat-icon {
+            font-size: 30px;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            margin-top: 8px;
+        }
+
+        .stat-label {
+            color: #6b7280;
+            margin-top: 5px;
+        }
+
+        /* ACTIONS */
+
+        .actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .secondary-button {
+            padding: 13px 20px;
+            border: none;
+            border-radius: 9px;
+            background: #111827;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .secondary-button:hover {
+            background: #374151;
+        }
+
+        /* FOOTER */
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: #6b7280;
+        }
+
+        /* MOBILE */
+
+        @media (max-width: 800px) {
+
+            .form-grid,
+            .profile-grid,
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group.full {
+                grid-column: auto;
+            }
+
+            .hero {
+                padding: 30px 22px;
+            }
+
+            .hero h1 {
+                font-size: 30px;
+            }
+
+            .header {
+                padding: 18px 5%;
+            }
+
+            .header-status {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="header">
+
+    <div class="logo">
+        💪 Fit<span>Buddy</span>
+    </div>
+
+    <div class="header-status">
+        🟢 AI Assistant Ready
+    </div>
+
+</header>
+
+
+<main class="container">
+
+    <!-- HERO -->
+
+    <section class="hero">
+
+        <h1>AI Fitness & Wellness Assistant</h1>
+
+        <p>
+            Create your personalized workout, nutrition guidance
+            and AI-updated fitness plan in one place.
+        </p>
+
+    </section>
+
+
+    <!-- PROFILE FORM -->
+
+    <section class="card">
+
+        <div class="card-title">
+            <span>👤</span>
+            <h2>Create Your Fitness Profile</h2>
+        </div>
+
+        <form id="fitnessForm">
+
+            <div class="form-grid">
+
+                <div class="form-group">
+
+                    <label>Name</label>
+
+                    <input
+                        type="text"
+                        id="name"
+                        placeholder="Enter your name"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Age</label>
+
+                    <input
+                        type="number"
+                        id="age"
+                        min="10"
+                        max="100"
+                        placeholder="Enter your age"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Gender</label>
+
+                    <select id="gender" required>
+
+                        <option value="">Select gender</option>
+
+                        <option value="Male">
+                            Male
+                        </option>
+
+                        <option value="Female">
+                            Female
+                        </option>
+
+                        <option value="Other">
+                            Other
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Fitness Goal</label>
+
+                    <select id="fitness_goal" required>
+
+                        <option value="">
+                            Select goal
+                        </option>
+
+                        <option value="Weight Loss">
+                            Weight Loss
+                        </option>
+
+                        <option value="Muscle Gain">
+                            Muscle Gain
+                        </option>
+
+                        <option value="Strength">
+                            Strength
+                        </option>
+
+                        <option value="General Fitness">
+                            General Fitness
+                        </option>
+
+                        <option value="Endurance">
+                            Endurance
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Fitness Level</label>
+
+                    <select id="fitness_level" required>
+
+                        <option value="">
+                            Select level
+                        </option>
+
+                        <option value="Beginner">
+                            Beginner
+                        </option>
+
+                        <option value="Intermediate">
+                            Intermediate
+                        </option>
+
+                        <option value="Advanced">
+                            Advanced
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Workout Days</label>
+
+                    <select id="workout_days" required>
+
+                        <option value="">
+                            Select days
+                        </option>
+
+                        <option value="2">
+                            2 Days
+                        </option>
+
+                        <option value="3">
+                            3 Days
+                        </option>
+
+                        <option value="4">
+                            4 Days
+                        </option>
+
+                        <option value="5">
+                            5 Days
+                        </option>
+
+                        <option value="6">
+                            6 Days
+                        </option>
+
+                        <option value="7">
+                            7 Days
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group full">
+
+                    <label>Diet Preference</label>
+
+                    <select id="diet_preference">
+
+                        <option value="">
+                            No Preference
+                        </option>
+
+                        <option value="Vegetarian">
+                            Vegetarian
+                        </option>
+
+                        <option value="Non-Vegetarian">
+                            Non-Vegetarian
+                        </option>
+
+                        <option value="Vegan">
+                            Vegan
+                        </option>
+
+                        <option value="High Protein">
+                            High Protein
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="primary-button"
+                id="generateButton"
+            >
+                🚀 Generate My AI Fitness Plan
+            </button>
+
+        </form>
+
+    </section>
+
+
+    <!-- LOADING -->
+
+    <section
+        class="card loading"
+        id="loading"
+    >
+
+        <div class="spinner"></div>
+
+        <strong>
+            FitBuddy AI is creating your personalized plan...
+        </strong>
+
+        <p>
+            Generating workout and nutrition guidance using Gemini.
+        </p>
+
+    </section>
+
+
+    <!-- MESSAGE -->
+
+    <div
+        id="message"
+        class="message"
+    ></div>
+
+
+    <!-- PROFILE RESULT -->
+
+    <section
+        class="card"
+        id="profileSection"
+        style="display:none;"
+    >
+
+        <div class="card-title">
+            <span>📋</span>
+            <h2>Your Fitness Profile</h2>
+        </div>
+
+
+        <div class="profile-grid">
+
+            <div class="profile-item">
+
+                <span>Name</span>
+
+                <strong id="profileName"></strong>
+
+            </div>
+
+
+            <div class="profile-item">
+
+                <span>Age</span>
+
+                <strong id="profileAge"></strong>
+
+            </div>
+
+
+            <div class="profile-item">
+
+                <span>Gender</span>
+
+                <strong id="profileGender"></strong>
+
+            </div>
+
+
+            <div class="profile-item">
+
+                <span>Fitness Goal</span>
+
+                <strong id="profileGoal"></strong>
+
+            </div>
+
+
+            <div class="profile-item">
+
+                <span>Fitness Level</span>
+
+                <strong id="profileLevel"></strong>
+
+            </div>
+
+
+            <div class="profile-item">
+
+                <span>Workout Days</span>
+
+                <strong id="profileDays"></strong>
+
+            </div>
+
+
+            <div class="profile-item">
+
+                <span>Diet Preference</span>
+
+                <strong id="profileDiet"></strong>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- DASHBOARD -->
+
+    <section
+        class="card"
+        id="dashboardSection"
+        style="display:none;"
+    >
+
+        <div class="card-title">
+
+            <span>📊</span>
+
+            <h2>Fitness Dashboard</h2>
+
+        </div>
+
+
+        <div class="stats-grid">
+
+            <div class="stat">
+
+                <div class="stat-icon">
+                    🏋️
+                </div>
+
+                <div
+                    class="stat-value"
+                    id="workoutStatus"
+                >
+                    Ready
+                </div>
+
+                <div class="stat-label">
+                    AI Workout
+                </div>
+
+            </div>
+
+
+            <div class="stat">
+
+                <div class="stat-icon">
+                    🥗
+                </div>
+
+                <div
+                    class="stat-value"
+                    id="nutritionStatus"
+                >
+                    Ready
+                </div>
+
+                <div class="stat-label">
+                    AI Nutrition
+                </div>
+
+            </div>
+
+
+            <div class="stat">
+
+                <div class="stat-icon">
+                    🤖
+                </div>
+
+                <div
+                    class="stat-value"
+                    id="aiStatus"
+                >
+                    Active
+                </div>
+
+                <div class="stat-label">
+                    Gemini AI
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- WORKOUT -->
+
+    <section
+        class="card"
+        id="workoutSection"
+        style="display:none;"
+    >
+
+        <div class="card-title">
+
+            <span>🏋️</span>
+
+            <h2>AI Personalized Workout Plan</h2>
+
+        </div>
+
+
+        <div
+            class="ai-output"
+            id="workoutOutput"
+        ></div>
+
+    </section>
+
+
+    <!-- NUTRITION -->
+
+    <section
+        class="card"
+        id="nutritionSection"
+        style="display:none;"
+    >
+
+        <div class="card-title">
+
+            <span>🥗</span>
+
+            <h2>AI Nutrition & Recovery Guidance</h2>
+
+        </div>
+
+
+        <div
+            class="ai-output nutrition-output"
+            id="nutritionOutput"
+        ></div>
+
+    </section>
+
+
+    <!-- FEEDBACK -->
+
+    <section
+        class="card"
+        id="feedbackSection"
+        style="display:none;"
+    >
+
+        <div class="card-title">
+
+            <span>💬</span>
+
+            <h2>Customize Your Workout</h2>
+
+        </div>
+
+
+        <p>
+            Tell FitBuddy what you want to change.
+            Gemini will generate an updated workout plan.
+        </p>
+
+
+        <textarea
+            id="feedback"
+            placeholder="Example: I don't have gym equipment. Create a home workout plan."
+        ></textarea>
+
+
+        <button
+            class="primary-button"
+            id="updateButton"
+            onclick="updateWorkout()"
+        >
+            🔄 Update My Workout Plan
+        </button>
+
+    </section>
+
+
+    <!-- UPDATED PLAN -->
+
+    <section
+        class="card"
+        id="updatedSection"
+        style="display:none;"
+    >
+
+        <div class="card-title">
+
+            <span>✨</span>
+
+            <h2>Updated AI Workout Plan</h2>
+
+        </div>
+
+
+        <div
+            class="ai-output updated-output"
+            id="updatedOutput"
+        ></div>
+
+    </section>
+
+
+    <!-- ACTIONS -->
+
+    <section
+        class="card"
+        id="actionsSection"
+        style="display:none;"
+    >
+
+        <div class="card-title">
+
+            <span>⚡</span>
+
+            <h2>Quick Actions</h2>
+
+        </div>
+
+
+        <div class="actions">
+
+            <button
+                class="secondary-button"
+                onclick="window.scrollTo({top:0, behavior:'smooth'})"
+            >
+                🏠 New Fitness Plan
+            </button>
+
+
+            <button
+                class="secondary-button"
+                onclick="window.open('/view-all-users', '_blank')"
+            >
+                📊 Admin Dashboard
+            </button>
+
+
+            <button
+                class="secondary-button"
+                onclick="window.open('/docs', '_blank')"
+            >
+                🔧 API Documentation
+            </button>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<footer>
+
+    <strong>FitBuddy 💪</strong>
+
+    <br>
+
+    AI-powered fitness planning using Google Gemini
+
+</footer>
+
+
+<script>
+
+let currentUserId = null;
+
+
+/* --------------------------------------------------
+   MESSAGE
+-------------------------------------------------- */
+
+function showMessage(text, type) {
+
+    const message =
+        document.getElementById("message");
+
+    message.className =
+        "message " + type;
+
+    message.textContent = text;
+
+}
+
+
+/* --------------------------------------------------
+   SHOW SECTION
+-------------------------------------------------- */
+
+function showSection(id) {
+
+    document.getElementById(id).style.display =
+        "block";
+
+}
+
+
+/* --------------------------------------------------
+   CREATE USER + GENERATE AI
+-------------------------------------------------- */
+
+document
+.getElementById("fitnessForm")
+.addEventListener("submit", async function(event) {
+
+    event.preventDefault();
+
+
+    const button =
+        document.getElementById("generateButton");
+
+    const loading =
+        document.getElementById("loading");
+
+
+    button.disabled = true;
+
+    loading.style.display = "block";
+
+    document.getElementById("message").className =
+        "message";
+
+
+    const userData = {
+
+        name:
+            document.getElementById("name").value,
+
+        age:
+            parseInt(
+                document.getElementById("age").value
+            ),
+
+        gender:
+            document.getElementById("gender").value,
+
+        fitness_goal:
+            document.getElementById("fitness_goal").value,
+
+        fitness_level:
+            document.getElementById("fitness_level").value,
+
+        workout_days:
+            parseInt(
+                document.getElementById("workout_days").value
+            ),
+
+        diet_preference:
+            document.getElementById("diet_preference").value
+
+    };
+
+
+    try {
+
+        /* CREATE USER */
+
+        const userResponse =
+            await fetch(
+                "/api/users/",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify(userData)
+                }
+            );
+
+
+        const userDataResponse =
+            await userResponse.json();
+
+
+        if (!userResponse.ok) {
+
+            throw new Error(
+                userDataResponse.detail ||
+                "Unable to create user"
+            );
+
+        }
+
+
+        currentUserId =
+            userDataResponse.user_id;
+
+
+        /* PROFILE */
+
+        document.getElementById("profileName")
+            .textContent = userData.name;
+
+        document.getElementById("profileAge")
+            .textContent = userData.age;
+
+        document.getElementById("profileGender")
+            .textContent = userData.gender;
+
+        document.getElementById("profileGoal")
+            .textContent = userData.fitness_goal;
+
+        document.getElementById("profileLevel")
+            .textContent = userData.fitness_level;
+
+        document.getElementById("profileDays")
+            .textContent =
+                userData.workout_days + " Days";
+
+        document.getElementById("profileDiet")
+            .textContent =
+                userData.diet_preference ||
+                "No Preference";
+
+
+        showSection("profileSection");
+
+        showSection("dashboardSection");
+
+
+        /* WORKOUT */
+
+        const workoutResponse =
+            await fetch(
+                `/api/users/${currentUserId}/generate-workout`,
+                {
+                    method: "POST"
+                }
+            );
+
+
+        const workoutData =
+            await workoutResponse.json();
+
+
+        if (!workoutResponse.ok) {
+
+            throw new Error(
+                workoutData.detail ||
+                "Workout generation failed"
+            );
+
+        }
+
+
+        document.getElementById("workoutOutput")
+            .textContent =
+                workoutData.workout_plan ||
+                "Workout plan generated successfully.";
+
+
+        showSection("workoutSection");
+
+
+        document.getElementById("workoutStatus")
+            .textContent = "Generated";
+
+
+        /* NUTRITION */
+
+        const nutritionResponse =
+            await fetch(
+                `/api/users/${currentUserId}/generate-nutrition`,
+                {
+                    method: "POST"
+                }
+            );
+
+
+        const nutritionData =
+            await nutritionResponse.json();
+
+
+        if (!nutritionResponse.ok) {
+
+            throw new Error(
+                nutritionData.detail ||
+                "Nutrition generation failed"
+            );
+
+        }
+
+
+        document.getElementById("nutritionOutput")
+            .textContent =
+                nutritionData.nutrition_tip ||
+                "Nutrition guidance generated successfully.";
+
+
+        showSection("nutritionSection");
+
+
+        document.getElementById("nutritionStatus")
+            .textContent = "Generated";
+
+
+        /* FEEDBACK */
+
+        showSection("feedbackSection");
+
+        showSection("actionsSection");
+
+
+        showMessage(
+            "🎉 Your complete AI fitness plan is ready!",
+            "success"
+        );
+
+
+        setTimeout(function() {
+
+            document
+                .getElementById("workoutSection")
+                .scrollIntoView({
+                    behavior: "smooth"
+                });
+
+        }, 500);
+
+
+    }
+
+    catch(error) {
+
+        showMessage(
+            error.message,
+            "error"
+        );
+
+    }
+
+    finally {
+
+        loading.style.display =
+            "none";
+
+        button.disabled =
+            false;
+
+    }
+
+});
+
+
+/* --------------------------------------------------
+   UPDATE WORKOUT
+-------------------------------------------------- */
+
+async function updateWorkout() {
+
+    const feedback =
+        document
+            .getElementById("feedback")
+            .value
+            .trim();
+
+
+    const button =
+        document.getElementById("updateButton");
+
+
+    if (!currentUserId) {
+
+        showMessage(
+            "Please generate your fitness plan first.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    if (!feedback) {
+
+        showMessage(
+            "Please enter your feedback first.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    button.disabled = true;
+
+    button.textContent =
+        "⏳ Updating with Gemini AI...";
+
+
+    try {
+
+        const response =
+            await fetch(
+                `/api/users/${currentUserId}/update-workout?feedback=${encodeURIComponent(feedback)}`,
+                {
+                    method: "POST"
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.detail ||
+                "Failed to update workout"
+            );
+
+        }
+
+
+        document.getElementById("updatedOutput")
+            .textContent =
+                data.updated_workout_plan;
+
+
+        showSection("updatedSection");
+
+
+        showMessage(
+            "✨ Your workout plan has been updated successfully!",
+            "success"
+        );
+
+
+        document
+            .getElementById("updatedSection")
+            .scrollIntoView({
+                behavior: "smooth"
+            });
+
+
+    }
+
+    catch(error) {
+
+        showMessage(
+            error.message,
+            "error"
+        );
+
+    }
+
+    finally {
+
+        button.disabled =
+            false;
+
+        button.textContent =
+            "🔄 Update My Workout Plan";
+
+    }
+
+}
+
+</script>
+
+</body>
+</html>

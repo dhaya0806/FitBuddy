@@ -1,0 +1,1 @@
+import {Router} from "express"; import {list,create,complete} from "../controllers/workoutController.js"; import {protect} from "../middleware/auth.js"; const r=Router(); r.use(protect); r.get("/",list); r.post("/",create); r.patch("/:id/complete",complete); export default r;

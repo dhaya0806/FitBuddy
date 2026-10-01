@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>FitBuddy - Your Fitness Plan</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #eef2ff, #f0fdf4);
+            color: #1f2937;
+        }
+
+        .header {
+            background: #111827;
+            color: white;
+            padding: 25px 40px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 32px;
+        }
+
+        .header p {
+            margin: 8px 0 0;
+            color: #d1d5db;
+        }
+
+        .container {
+            width: 92%;
+            max-width: 1100px;
+            margin: 35px auto;
+        }
+
+        .welcome {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .welcome h2 {
+            font-size: 30px;
+            margin-bottom: 8px;
+        }
+
+        .welcome p {
+            color: #6b7280;
+        }
+
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 18px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        .card h3 {
+            margin-top: 0;
+            font-size: 22px;
+            color: #111827;
+        }
+
+        .user-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .user-item {
+            background: #f9fafb;
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .user-item strong {
+            display: block;
+            margin-bottom: 5px;
+            color: #4f46e5;
+        }
+
+        .plan {
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 20px;
+            white-space: pre-wrap;
+            line-height: 1.7;
+            max-height: 700px;
+            overflow-y: auto;
+        }
+
+        .nutrition {
+            background: #f0fdf4;
+            border-radius: 12px;
+            padding: 20px;
+            white-space: pre-wrap;
+            line-height: 1.7;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 15px;
+            border: 1px solid #d1d5db;
+            border-radius: 10px;
+            font-size: 15px;
+            resize: vertical;
+            outline: none;
+        }
+
+        textarea:focus {
+            border-color: #4f46e5;
+        }
+
+        .button {
+            margin-top: 15px;
+            padding: 14px 25px;
+            border: none;
+            border-radius: 10px;
+            background: #4f46e5;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .button:hover {
+            background: #4338ca;
+        }
+
+        .button:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        .updated {
+            background: #eff6ff;
+            border: 2px solid #4f46e5;
+            border-radius: 12px;
+            padding: 20px;
+            white-space: pre-wrap;
+            line-height: 1.7;
+            max-height: 700px;
+            overflow-y: auto;
+        }
+
+        .message {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .success {
+            display: block;
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .error {
+            display: block;
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .actions {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .actions a {
+            display: inline-block;
+            margin: 5px;
+            padding: 12px 20px;
+            border-radius: 9px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .home-btn {
+            background: #111827;
+            color: white;
+        }
+
+        .admin-btn {
+            background: #e5e7eb;
+            color: #111827;
+        }
+
+        @media (max-width: 700px) {
+
+            .user-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header {
+                padding: 20px;
+            }
+
+            .card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="header">
+    <h1>FitBuddy 💪</h1>
+    <p>Your AI-powered personalized fitness plan</p>
+</header>
+
+
+<main class="container">
+
+    <!-- Welcome -->
+
+    <section class="welcome">
+
+        <h2>
+            Welcome, {{ user.name }}! 🎉
+        </h2>
+
+        <p>
+            Your personalized fitness plan has been generated using Gemini AI.
+        </p>
+
+    </section>
+
+
+    <!-- User Information -->
+
+    <section class="card">
+
+        <h3>👤 Your Fitness Profile</h3>
+
+        <div class="user-grid">
+
+            <div class="user-item">
+                <strong>Name</strong>
+                {{ user.name }}
+            </div>
+
+            <div class="user-item">
+                <strong>Age</strong>
+                {{ user.age }}
+            </div>
+
+            <div class="user-item">
+                <strong>Gender</strong>
+                {{ user.gender }}
+            </div>
+
+            <div class="user-item">
+                <strong>Fitness Goal</strong>
+                {{ user.fitness_goal }}
+            </div>
+
+            <div class="user-item">
+                <strong>Fitness Level</strong>
+                {{ user.fitness_level }}
+            </div>
+
+            <div class="user-item">
+                <strong>Workout Days</strong>
+                {{ user.workout_days }} Days
+            </div>
+
+            <div class="user-item">
+                <strong>Diet Preference</strong>
+                {{ user.diet_preference or "No Preference" }}
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- Original Workout Plan -->
+
+    <section class="card">
+
+        <h3>🏋️ Your AI Workout Plan</h3>
+
+        <div class="plan">
+{{ user.workout_plan or "Workout plan not available." }}
+        </div>
+
+    </section>
+
+
+    <!-- Nutrition -->
+
+    <section class="card">
+
+        <h3>🥗 AI Nutrition & Recovery Advice</h3>
+
+        <div class="nutrition">
+{{ user.nutrition_tip or "Nutrition advice not available." }}
+        </div>
+
+    </section>
+
+
+    <!-- Feedback -->
+
+    <section class="card">
+
+        <h3>💬 Want to Modify Your Workout?</h3>
+
+        <p>
+            Tell FitBuddy what you want to change in your workout plan.
+        </p>
+
+        <textarea
+            id="feedback"
+            placeholder="Example: I don't have access to gym equipment. Give me a home workout plan."
+        ></textarea>
+
+        <button
+            class="button"
+            id="updateButton"
+            onclick="updateWorkout()"
+        >
+            🔄 Update My Workout Plan
+        </button>
+
+        <div
+            id="message"
+            class="message"
+        ></div>
+
+    </section>
+
+
+    <!-- Updated Workout -->
+
+    {% if user.updated_workout_plan %}
+
+    <section class="card">
+
+        <h3>✨ Updated AI Workout Plan</h3>
+
+        <div class="updated">
+{{ user.updated_workout_plan }}
+        </div>
+
+    </section>
+
+    {% endif %}
+
+
+    <!-- Actions -->
+
+    <div class="actions">
+
+        <a
+            href="/"
+            class="home-btn"
+        >
+            🏠 Create New Plan
+        </a>
+
+        <a
+            href="/view-all-users"
+            class="admin-btn"
+        >
+            📊 Admin Dashboard
+        </a>
+
+    </div>
+
+</main>
+
+
+<script>
+
+async function updateWorkout() {
+
+    const feedback =
+        document.getElementById("feedback").value.trim();
+
+    const button =
+        document.getElementById("updateButton");
+
+    const message =
+        document.getElementById("message");
+
+
+    if (!feedback) {
+
+        message.className = "message error";
+
+        message.textContent =
+            "Please enter your feedback first.";
+
+        return;
+    }
+
+
+    button.disabled = true;
+
+    button.textContent =
+        "⏳ Updating workout plan...";
+
+
+    message.className = "message";
+
+    message.textContent = "";
+
+
+    try {
+
+        const userId =
+            "{{ user.id }}";
+
+
+        const response = await fetch(
+            `/api/users/${userId}/update-workout?feedback=${encodeURIComponent(feedback)}`,
+            {
+                method: "POST"
+            }
+        );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.detail || "Failed to update workout plan"
+            );
+
+        }
+
+
+        message.className =
+            "message success";
+
+        message.textContent =
+            "Workout plan updated successfully!";
+
+
+        setTimeout(function() {
+
+            window.location.reload();
+
+        }, 1000);
+
+
+    } catch (error) {
+
+        message.className =
+            "message error";
+
+        message.textContent =
+            error.message;
+
+        button.disabled = false;
+
+        button.textContent =
+            "🔄 Update My Workout Plan";
+
+    }
+
+}
+
+</script>
+
+</body>
+
+</html>

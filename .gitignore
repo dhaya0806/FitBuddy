@@ -1,0 +1,13 @@
+@"
+node_modules/
+.env
+.env.local
+.env.*
+dist/
+.DS_Store
+
+fitbuddy-env/
+__pycache__/
+*.pyc
+*.db
+"@ | Set-Content .gitignore
